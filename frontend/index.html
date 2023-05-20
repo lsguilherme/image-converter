@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Imagem</title>
+</head>
+
+<body>
+    <form action="http:localhost:3000/imagens" method="POST">
+        <label for="say">Imagem:</label>
+        <input type="file" accept=".bmp, .gif, .png, .tiff, .webp">
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script>
+        async function postData(url = "", data = {}) {
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify(data)
+            });
+            return response.json();
+        }
+    </script>
+</body>
+
+</html>
