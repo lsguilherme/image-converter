@@ -1,10 +1,11 @@
+let main = document.querySelector('main');
 let listaArquivos = document.querySelector('.lista-arquivos');
-let tituloArquivosSelecionados = document.querySelector('#selecionados')
+let tituloArquivosSelecionados = document.querySelector('#selecionados');
 
 let inputFile = document.querySelector('#imagem');
 let inputFileCount = document.querySelector('#count');
 inputFile.addEventListener('change', (event) => {
-    if (inputFile.files.length > 0 && inputFile.files.length <= 10) {
+    if (inputFile.files.length > 0) {
         listaArquivos.classList.remove('sumir');
         tituloArquivosSelecionados.classList.remove('sumir');
         listaArquivos.innerHTML = '';
@@ -15,8 +16,6 @@ inputFile.addEventListener('change', (event) => {
             let item = `<li class="item-arquivo"><img src="${URL.createObjectURL(arquivo)}"><span>${arquivo.name}</span></li>`;
             listaArquivos.innerHTML += item;
         }
-    } else if (inputFile.files.length > 10) {
-        alert("Você só pode enviar no máximo 10 arquivos.")
     } else {
         listaArquivos.classList.add('sumir');
         tituloArquivosSelecionados.classList.add('sumir');
@@ -25,41 +24,31 @@ inputFile.addEventListener('change', (event) => {
     }
 });
 
-let botaoEnviar = document.querySelector('button');
-botaoEnviar.addEventListener('click', (event) => {
-    listaArquivos.classList.toggle('sumir');
-    console.log(listaArquivos.classList);
-})
+let form = document.getElementById("form")
+form.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-// document
-//     .getElementById("form")
-//     .addEventListener("submit", function (event) {
-//         event.preventDefault();
+    if (inputFile.files.length != 0) {
+        const formData = new FormData();
+        for (let i = 0; i < inputFile.files.length; i++) {
+            formData.append('imagem', inputFile.files[i])
+        }
 
-//         const fileInput = document.getElementById("imagem");
-
-//         const formData = new FormData();
-//         formData.append("imagem", fileInput.files[0]);
-
-//         fetch("http://localhost:3000/imagens", {
-//             method: "POST",
-//             body: formData,
-//         })
-//             .then(function (response) {
-//                 return response.blob();
-//             })
-//             .then(function (blob) {
-//                 const imageUrl = URL.createObjectURL(blob);
-
-//                 const downloadLink = document.createElement("a");
-//                 downloadLink.href = imageUrl;
-//                 downloadLink.download = "imagem.jpeg";
-//                 downloadLink.textContent = "Download";
-
-//                 const imageContainer = document.getElementById("imageContainer");
-//                 imageContainer.appendChild(downloadLink);
-//             })
-//             .catch(function (error) {
-//                 console.error("Erro: ", error);
-//             });
-//     });
+        fetch("http://localhost:3000/imagens", {
+            method: "POST",
+            body: formData,
+        }).then(function (response) {
+            return response.blob();
+        }).then(function (blob) {
+            const imageUrl = URL.createObjectURL(blob);
+            let fileName = inputFile.files[0].name.split('.');
+            fileName[fileName.length - 1] = 'jpeg';
+            let link = `<a href="${imageUrl}" class="download" download="${fileName.join('.')}">Donwload</a>`;
+            main.innerHTML += link;
+        }).catch(function (error) {
+            console.error("Erro: ", error);
+        });
+    } else {
+        alert("Nenhum arquivo selecionado!")
+    }
+});
