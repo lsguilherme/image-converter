@@ -12,8 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^2.0.22",
     "sharp": "^0.32.1",
     "zeromq": "^6.0.0-beta.16"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
