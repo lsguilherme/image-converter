@@ -1,56 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Conversor de Imagem</title>
-  </head>
 
-  <body>
-    <form id="form" method="post">
-      <label for="imagem">Imagem:</label>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conversor de Imagem</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
 
-      <input id="imagem" type="file" accept=".bmp, .gif, .png, .tiff, .webp" />
-      <br /><br />
-      <button type="submit">Enviar</button>
+<body>
+  <main>
+    <form id="form" class="form">
+      <h1>Conversor de Imagem</h1>
+      <h2>Selecione os arquivos:</h2>
+      <div>
+        <label for="imagem">Selecionar os Arquivos</label>
+        <span id="count" class="sumir"></span>
+      </div>
+      <input id="imagem" type="file" accept=".bmp, .gif, .png, .tiff, .webp" multiple />
+
+      <h2 id="selecionados" class="sumir">Arquivos selecionados:</h2>
+      <ul class="lista-arquivos sumir"></ul>
+      
+      <button>Enviar</button>
     </form>
+  </main>
 
-    <div id="imageContainer"></div>
+  <div id="imageContainer"></div>
 
-    <script>
-      document
-        .getElementById("form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
+  <script src="./javascript/main.js"></script>
+</body>
 
-          const fileInput = document.getElementById("imagem");
-
-          const formData = new FormData();
-          formData.append("imagem", fileInput.files[0]);
-
-          fetch("http://localhost:3000/imagens", {
-            method: "POST",
-            body: formData,
-          })
-            .then(function (response) {
-              return response.blob();
-            })
-            .then(function (blob) {
-              const imageUrl = URL.createObjectURL(blob);
-
-              const downloadLink = document.createElement("a");
-              downloadLink.href = imageUrl;
-              downloadLink.download = "imagem.jpeg";
-              downloadLink.textContent = "Download";
-
-              const imageContainer = document.getElementById("imageContainer");
-              imageContainer.appendChild(downloadLink);
-            })
-            .catch(function (error) {
-              console.error("Erro: ", error);
-            });
-        });
-    </script>
-  </body>
 </html>
