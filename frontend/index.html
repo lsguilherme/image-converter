@@ -16,6 +16,8 @@
       <button type="submit">Enviar</button>
     </form>
 
+    <div id="imageContainer"></div>
+
     <script>
       document
         .getElementById("form")
@@ -34,7 +36,18 @@
             .then(function (response) {
               return response.blob();
             })
-            .then(function (blob) {})
+            .then(function (blob) {
+              const imageUrl = URL.createObjectURL(blob);
+
+              const downloadLink = document.createElement("a");
+              downloadLink.href = imageUrl;
+              downloadLink.download = "imagem.jpeg";
+              downloadLink.textContent = "Download";
+
+              const imageContainer = document.getElementById("imageContainer");
+              imageContainer.appendChild(downloadLink);
+              document.body.removeChild(link);
+            })
             .catch(function (error) {
               console.error("Erro: ", error);
             });
