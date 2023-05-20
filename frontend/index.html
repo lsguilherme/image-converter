@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Conversor de Imagem</title>
-</head>
+  </head>
 
-<body>
-    <form action="http:localhost:3000/imagens" method="POST">
-        <label for="say">Imagem:</label>
-        <input type="file" accept=".bmp, .gif, .png, .tiff, .webp">
-        <button type="submit">Enviar</button>
+  <body>
+    <form id="form" method="post">
+      <label for="imagem">Imagem:</label>
+
+      <input id="imagem" type="file" accept=".bmp, .gif, .png, .tiff, .webp" />
+      <br /><br />
+      <button type="submit">Enviar</button>
     </form>
 
     <script>
-        async function postData(url = "", data = {}) {
-            const response = await fetch(url, {
-                method: "POST",
-                body: JSON.stringify(data)
-            });
-            return response.json();
-        }
-    </script>
-</body>
+      document
+        .getElementById("form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
 
+          const fileInput = document.getElementById("imagem");
+
+          const formData = new FormData();
+          formData.append("imagem", fileInput.files[0]);
+
+          fetch("http://localhost:3000/imagens", {
+            method: "POST",
+            body: formData,
+          })
+            .then(function (response) {
+              return response.blob();
+            })
+            .then(function (blob) {})
+            .catch(function (error) {
+              console.error("Erro: ", error);
+            });
+        });
+    </script>
+  </body>
 </html>
