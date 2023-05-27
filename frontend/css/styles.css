@@ -139,26 +139,41 @@ button:active {
     display: none !important;
 }
 
-.form .lista-arquivos {
+.lista-arquivos {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.form .item-arquivo {
+.item-arquivo {
     display: flex;
     align-items: center;
     line-height: 40px;
 }
 
-.form .item-arquivo img {
-    width: 30px;
-    height: 30px;
+.arquivo-img {
+    max-width: 30px;
+    max-height: 30px;
+    backdrop-filter: brightness(0);
+    border-radius: 0;
     margin: 0 10px;
+    object-fit: contain;
 }
 
-.form .item-arquivo span {
+.arquivo-img:hover {
+    z-index: 1;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(28, 28, 28, 0.8);
+    transform: scale(10) translate(-45%, 0%);
+}
+
+.item-arquivo span {
+    display: inline-block;
     font-size: 1rem;
+    max-width: 278px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .download {

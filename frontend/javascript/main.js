@@ -13,7 +13,7 @@ inputFile.addEventListener('change', (event) => {
         inputFileCount.textContent = `${inputFile.files.length} ${inputFile.files.length > 1 ? 'arquivos' : 'arquivo'}`
 
         for (let arquivo of inputFile.files) {
-            let item = `<li class="item-arquivo"><img src="${URL.createObjectURL(arquivo)}"><span>${arquivo.name}</span></li>`;
+            let item = `<li class="item-arquivo"><img class="arquivo-img" src="${URL.createObjectURL(arquivo)}"><span>${arquivo.name}</span></li>`;
             listaArquivos.innerHTML += item;
         }
     } else {
