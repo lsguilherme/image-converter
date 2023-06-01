@@ -1,22 +1,42 @@
 import express from "express";
 import multer from "multer";
-import zmq from "zeromq";
 const router = express.Router();
 const upload = multer();
+import amqplib from 'amqplib';
 
 router.post("/", upload.single("imagem"), async (req, res) => {
-  const sock = new zmq.Request();
+  if (req.file && req.file.buffer) {
+    (async () => {
+      const queueAPI = 'tasksAPI';
+      const queueConverter = 'tasksConverter';
+      const conn = await amqplib.connect('amqp://localhost:5672');
 
-  sock.connect("tcp://127.0.0.1:3001");
+      conn.on('error', function (err) { /*console.error('RabbitMQ Connection ' + err)*/ })
 
-  await sock.send(req.file.buffer);
-  const [result] = await sock.receive();
+      const ch1 = await conn.createChannel();
+      const ch2 = await conn.createChannel();
+      await ch2.assertQueue(queueAPI);
 
-  res.set({
-    "Content-Type": "image/jpeg",
-    "Content-Disposition": `attachment; filename=${req.file.originalname}`,
-  });
-  res.end(result);
+      ch1.sendToQueue(queueConverter, req.file.buffer);
+
+      await ch1.consume(queueAPI, (msg) => {
+        if (msg !== null) {
+          let nomeOriginal = req.file.originalname.split('.')
+          nomeOriginal.pop()
+          res.set({
+            "Content-Type": "image/jpeg",
+            "Content-Disposition": `attachment; filename=${nomeOriginal.join('.')}.jpeg`,
+          });
+          res.end(msg.content)
+          ch1.ack(msg);
+        } else {
+          console.log('Consumer cancelled by server');
+        }
+      })
+    })();
+  } else {
+    return res.send('sem arquivo');
+  }
 });
 
 export default router;
